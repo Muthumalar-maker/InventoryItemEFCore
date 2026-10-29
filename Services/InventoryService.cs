@@ -259,5 +259,58 @@ namespace InventoryItemEFCore.Services
         }
 
 
+        public void DeleteItem()
+        {
+            Console.Write("Enter Item ID to delete: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
+            {
+                Console.WriteLine("Invalid Item ID.");
+                return;
+            }
+
+            using var context = new ApplicationDbContext();
+
+            var item = context.InventoryItems.Find(id);
+
+            if (item == null)
+            {
+                Console.WriteLine("Inventory item not found.");
+                return;
+            }
+
+            Console.WriteLine("\n=== ITEM DETAILS ===");
+            Console.WriteLine($"ID       : {item.Id}");
+            Console.WriteLine($"Name     : {item.Name}");
+            Console.WriteLine($"SKU      : {item.SKU}");
+            Console.WriteLine($"Category : {item.Category}");
+
+            Console.Write("\nAre you sure you want to delete this item? (Y/N): ");
+            string confirmation = (Console.ReadLine() ?? "").Trim();
+
+            if (!confirmation.Equals(
+                "Y", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Delete operation cancelled.");
+                return;
+            }
+
+            try
+            {
+                context.InventoryItems.Remove(item);
+                context.SaveChanges();
+
+                Console.WriteLine("Inventory item deleted successfully!");
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            {
+                Console.WriteLine("Unable to delete the inventory item.");
+                Console.WriteLine(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+
+
     }
 }
