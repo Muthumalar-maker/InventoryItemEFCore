@@ -13,6 +13,7 @@ namespace InventoryItemEFCore
             Console.WriteLine("1. Add Inventory Item");
             Console.WriteLine("2. Search Item by ID");
             Console.WriteLine("3. Search Item by SKU");
+            Console.WriteLine("4. Update Inventory Item");
             Console.WriteLine("0. Exit");
             Console.Write("Choose an option: ");
 
@@ -30,6 +31,10 @@ namespace InventoryItemEFCore
 
                 case "3":
                     inventoryService.SearchItemBySKU();
+                    break;
+
+                case "4":
+                    inventoryService.UpdateItem();
                     break;
 
 

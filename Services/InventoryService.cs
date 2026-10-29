@@ -170,5 +170,94 @@ namespace InventoryItemEFCore.Services
             Console.WriteLine($"Unit Price    : {item.UnitPrice:F2}");
         }
 
+
+
+        public void UpdateItem()
+        {
+            Console.Write("Enter Item ID to update: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int id) || id <= 0)
+            {
+                Console.WriteLine("Invalid Item ID.");
+                return;
+            }
+
+            using var context = new ApplicationDbContext();
+
+            var item = context.InventoryItems.Find(id);
+
+            if (item == null)
+            {
+                Console.WriteLine("Inventory item not found.");
+                return;
+            }
+
+            Console.WriteLine("\n=== CURRENT ITEM DETAILS ===");
+            Console.WriteLine($"Name: {item.Name}");
+            Console.WriteLine($"SKU: {item.SKU}");
+            Console.WriteLine($"Category: {item.Category}");
+            Console.WriteLine($"Quantity: {item.QuantityInStock}");
+            Console.WriteLine($"Reorder Level: {item.ReorderLevel}");
+            Console.WriteLine($"Unit Price: {item.UnitPrice:F2}");
+
+            Console.WriteLine("\nEnter the new details:");
+
+            Console.Write("Enter new name: ");
+            string name = (Console.ReadLine() ?? "").Trim();
+
+            Console.Write("Enter new category: ");
+            string category = (Console.ReadLine() ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(category))
+            {
+                Console.WriteLine("Name and category cannot be empty.");
+                return;
+            }
+
+            Console.Write("Enter new quantity: ");
+            if (!int.TryParse(Console.ReadLine(), out int quantity) ||
+                quantity < 0)
+            {
+                Console.WriteLine("Enter a valid non-negative quantity.");
+                return;
+            }
+
+            Console.Write("Enter new reorder level: ");
+            if (!int.TryParse(Console.ReadLine(), out int reorderLevel) ||
+                reorderLevel < 0)
+            {
+                Console.WriteLine("Enter a valid non-negative reorder level.");
+                return;
+            }
+
+            Console.Write("Enter new unit price: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal unitPrice) ||
+                unitPrice < 0)
+            {
+                Console.WriteLine("Enter a valid non-negative unit price.");
+                return;
+            }
+
+            item.Name = name;
+            item.Category = category;
+            item.QuantityInStock = quantity;
+            item.ReorderLevel = reorderLevel;
+            item.UnitPrice = unitPrice;
+
+            try
+            {
+                context.SaveChanges();
+                Console.WriteLine("\nInventory item updated successfully!");
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            {
+                Console.WriteLine("Unable to update the inventory item.");
+                Console.WriteLine(
+                    ex.InnerException?.Message ?? ex.Message);
+            }
+        }
+
+
     }
 }
