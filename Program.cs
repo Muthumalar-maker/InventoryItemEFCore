@@ -11,6 +11,8 @@ namespace InventoryItemEFCore
 
             Console.WriteLine("=== INVENTORY MANAGEMENT SYSTEM ===");
             Console.WriteLine("1. Add Inventory Item");
+            Console.WriteLine("2. Search Item by ID");
+            Console.WriteLine("3. Search Item by SKU");
             Console.WriteLine("0. Exit");
             Console.Write("Choose an option: ");
 
@@ -21,6 +23,15 @@ namespace InventoryItemEFCore
                 case "1":
                     inventoryService.AddItem();
                     break;
+
+                case "2":
+                    inventoryService.SearchItemById();
+                    break;
+
+                case "3":
+                    inventoryService.SearchItemBySKU();
+                    break;
+
 
                 case "0":
                     Console.WriteLine("Exiting application...");
