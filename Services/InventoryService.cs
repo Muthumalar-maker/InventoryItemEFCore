@@ -1,13 +1,16 @@
-﻿
+﻿using InventoryItemEFCore.Services;
 using InventoryItemEFCore.Data;
 using InventoryItemEFCore.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 
+
+
 namespace InventoryItemEFCore.Services
 {
     public class InventoryService
     {
+        private readonly AuditLogService auditLogService = new AuditLogService();
         public void AddItem()
         {
             Console.Write("Enter item name: ");
@@ -86,6 +89,12 @@ namespace InventoryItemEFCore.Services
 
                 context.InventoryItems.Add(item);
                 context.SaveChanges();
+
+                auditLogService.LogActivity(
+                    item.Id,
+                    "INSERT",
+                    $"{item.Name} item added successfully"
+                );
 
                 Console.WriteLine("\nInventory item added successfully!");
                 Console.WriteLine($"Generated Item ID: {item.Id}");
